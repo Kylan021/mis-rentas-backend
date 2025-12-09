@@ -1,17 +1,26 @@
 
 const authResolvers = require("./auth");
+const propertyResolvers = require("./property");
 
 const resolvers = {
 
     Query: {
 
-        ...authResolvers.Query
+        ...authResolvers.Query,
+        ...propertyResolvers.Query
 
     },
 
     Mutation: {
 
-        ...authResolvers.Mutation
+        ...authResolvers.Mutation,
+        ...propertyResolvers.Mutation
+
+    },
+
+    Property: {
+
+        ...propertyResolvers.Property
 
     }
 
