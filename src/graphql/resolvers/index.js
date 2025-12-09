@@ -1,19 +1,20 @@
 
-const Query = {
+const authResolvers = require("./auth");
 
-    hello: () => "Hello from GraphQL"
+const resolvers = {
+
+    Query: {
+
+        ...authResolvers.Query
+
+    },
+
+    Mutation: {
+
+        ...authResolvers.Mutation
+
+    }
 
 };
 
-const Mutation = {
-
-    _empty: () => null
-
-};
-
-module.exports = {
-
-    Query,
-    Mutation
-
-}
+module.exports = resolvers;
