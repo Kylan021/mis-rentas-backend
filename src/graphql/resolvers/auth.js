@@ -7,17 +7,9 @@ const authResolvers = {
 
     Query: {
 
-        async account(_, __, { user, models }) {
+        async account(_, __, { user }) {
 
-            if (!user || !user.id) {
-
-                return null;
-
-            }
-
-            const dbUser = await models.User.findByPk(user.id);
-
-            return dbUser;
+            return user || null;
 
         }
 
@@ -27,7 +19,7 @@ const authResolvers = {
 
         async register(_, { name, email, password, role }, { models }) {
 
-            const nomalizedEmail = email.toLowerCase().trim();
+            const normalizedEmail = email.toLowerCase().trim();
 
             if (!ALLOWED_ROLES.includes(role)) {
 
@@ -37,7 +29,7 @@ const authResolvers = {
 
             const existing = await models.User.findOne({
 
-                where: { email: nomalizedEmail }
+                where: { email: normalizedEmail }
 
             });
 
@@ -52,7 +44,7 @@ const authResolvers = {
             const user = await models.User.create({
 
                 name,
-                email: nomalizedEmail,
+                email: normalizedEmail,
                 passwordHash,
                 role
 
@@ -64,11 +56,11 @@ const authResolvers = {
 
         async login(_, { email, password }, { models }) {
 
-            const nomalizedEmail = email.toLowerCase().trim();
+            const normalizedEmail = email.toLowerCase().trim();
 
             const user = await models.User.findOne({
 
-                where: { email: nomalizedEmail }
+                where: { email: normalizedEmail }
 
             });
 
