@@ -8,8 +8,6 @@ const db = require("./models");
 
 const app = express();
 
-app.use(express.json());
-
 function getUserFromToken(request) {
 
     const authHeader = request.headers.authorization || "";
