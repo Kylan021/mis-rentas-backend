@@ -1,3 +1,4 @@
+const { Op } = require("sequelize");
 const { requireRole } = require("../../utils/validation");
 
 const propertyResolvers = {
@@ -21,7 +22,103 @@ const propertyResolvers = {
 
             return models.Property.findByPk(id);
 
-        }
+        },
+
+        async searchAvailableProperties(_, { start, end, guests }, { models }) {
+
+            const startDate = new Date(start);
+            const endDate = new Date(end);
+
+            if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+
+                throw new Error('Invalid date format. Use YYYY-MM-DD');
+            
+            }
+
+            if (startDate >= endDate) {
+            
+                throw new Error('Start date must be before end date');
+            
+            }
+
+            if (guests <= 0) {
+            
+                throw new Error('Guests must be greater than 0');
+            
+            }
+
+            const properties = await models.Property.findAll({
+            
+                where: {
+            
+                    maxGuests: {
+            
+                        [Op.gte]: guests,
+            
+                    },
+                
+                },
+            
+            });
+
+            if (properties.length === 0) {
+            
+                return [];
+            
+            }
+
+            const startStr = start;
+            const endStr = end;
+
+            const available = [];
+
+            for (const property of properties) {
+        
+                const overlappingBookings = await models.Booking.count({
+        
+                    where: {
+
+                        propertyId: property.id,
+                        status: 'CONFIRMED',
+                        [Op.and]: [
+
+                            { startDate: { [Op.lte]: endStr } },
+                            { endDate: { [Op.gte]: startStr } },
+
+                        ],
+                    },
+                });
+
+                if (overlappingBookings > 0) {
+
+                    continue;
+
+                }
+
+                const overlappingBlocks = await models.BlockedDate.count({
+                
+                    where: {
+                        propertyId: property.id,
+                        [Op.and]: [
+
+                            { startDate: { [Op.lte]: endStr } },
+                            { endDate: { [Op.gte]: startStr } },
+
+                        ],
+                    },
+                });
+
+                if (overlappingBlocks > 0) {
+
+                    continue;
+
+                }
+
+                available.push(property);
+            }
+
+            return available;
+        },
 
     },
 
