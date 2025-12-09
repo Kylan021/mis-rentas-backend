@@ -1,11 +1,11 @@
 
 const Sequelize = require("sequelize");
-const sequelize = require("src/config/database");
+const sequelize = require("../config/database");
 
-const User = require('src/models/user')(sequelize, Sequelize.DataTypes);
-const Property = require("src/models/property")(sequelize, Sequelize.DataTypes);
-const Booking = require("src/models/booking")(sequelize, Sequelize.DataTypes);
-const BlockedDate = require("src/models/blockedDate")(sequelize, Sequelize.DataTypes);
+const User = require('./user')(sequelize, Sequelize.DataTypes);
+const Property = require("./property")(sequelize, Sequelize.DataTypes);
+const Booking = require("./booking")(sequelize, Sequelize.DataTypes);
+const BlockedDate = require("./blockedDate")(sequelize, Sequelize.DataTypes);
 
 User.hasMany(Property, { foreignKey: 'owner_id', as: 'properties' });
 Property.belongsTo(User, { foreignKey: 'owner_id', as: 'owner' });
