@@ -12,6 +12,42 @@ const typeDefs = gql `
 
     }
 
+    type Property{
+
+        id: ID!
+        title: String!
+        description: String
+        maxGuests: Int!
+        basePricePerNight: Float!
+        owner: User!
+        bookings: [Booking!]
+        blockedDates: [BlockedDate!]
+
+    }
+
+    type Booking {
+    
+        id: ID!
+        property: Property!
+        user: User!
+        startDate: String!
+        endDate: String!
+        status: String!
+        totalPrice: Float!
+        guests: Int!
+
+    }
+
+    type BlockedDate {
+    
+        id: ID!
+        property: Property!
+        startDate: String!
+        endDate: String!
+        reason: String
+
+    }
+
     type AuthPayload {
     
         token: String!
@@ -22,6 +58,18 @@ const typeDefs = gql `
     type Query {
     
         account: User
+
+        myProperties: [Property!]!
+
+        property(id: ID!): Property
+
+        searchAvailableProperties(
+        
+            start: String!
+            end: String!
+            guests: Int!
+
+        ): [Property!]!
 
     }
 
@@ -42,6 +90,45 @@ const typeDefs = gql `
             password: String!
 
         ): AuthPayload!
+
+        createProperty(
+        
+            title: String!
+            description: String
+            maxGuests: Int!
+            basePricePerNight: Float!
+        
+        ): Property!
+
+        updateProperty(
+        
+            id: ID!
+            title: String
+            description: String
+            maxGuests: Int
+            basePricePerNight: Float
+        
+        ): Property!
+
+        deleteProperty(id: ID!): Boolean!
+
+        createBlockedDate(
+        
+            propertyId: ID!
+            start: String!
+            end: String!
+            reason: String
+
+        ): BlockedDate!
+
+        createBooking(
+        
+            propertyId: ID!
+            start: String!
+            end: String!
+            guests: Int!
+
+        ): Booking!
 
     }
 
