@@ -2,6 +2,7 @@
 const authResolvers = require("./auth");
 const propertyResolvers = require("./property");
 const blockedDateResolvers = require("./blockedDate");
+const bookingResolvers = require("./booking");
 
 const resolvers = {
 
@@ -16,7 +17,8 @@ const resolvers = {
 
         ...authResolvers.Mutation,
         ...propertyResolvers.Mutation,
-        ...blockedDateResolvers.Mutation
+        ...blockedDateResolvers.Mutation,
+        ...bookingResolvers.Mutation
 
     },
 
@@ -29,6 +31,12 @@ const resolvers = {
     BlockedDate: {
 
         ...blockedDateResolvers.BlockedDate
+
+    },
+
+    Booking: {
+
+        ...bookingResolvers.Booking,
 
     }
 
